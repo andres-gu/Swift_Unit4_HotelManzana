@@ -11,6 +11,8 @@ import UIKit
 class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeTableViewControllerDelegate {
     
     //
+    @IBOutlet weak var doneBarButton: UIBarButtonItem!
+    //
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -41,7 +43,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         let numberOfAdults = Int(numberOfAdultsStepper.value)
         let numberOfChildren = Int(numberOfChildrenStepper.value)
         let hasWifi = wifiSwitch.isOn
-        
+
         return Registration(firstName: firstName,
                             lastName: lastName,
                             email: email,
@@ -52,8 +54,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
                             roomType: roomType,
                             wifi: hasWifi)
     }
-    
-    
+
     //
     let checkInDatePickerCellIndexPath = IndexPath(row: 1, section: 1)
     let checkOutDatePickerCellIndexPath = IndexPath(row: 3, section: 1)
@@ -83,30 +84,46 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         updateDateViews()
         updateNumberOfGuests()
         updateRoomType()
+        updateDoneButtonState()
 
     }
     
-    @IBAction func doneBarButtonTapped(_ sender: UIBarButtonItem) {
+//    @IBAction func doneBarButtonTapped(_ sender: UIBarButtonItem) {
+//        let firstName = firstNameTextField.text ?? ""
+//        let lastName = lastNameTextField.text ?? ""
+//        let email = emailTextField.text ?? ""
+//        let checkIn = checkInDateLabel.text ?? ""
+//        let checkOut = checkOutDateLabel.text ?? ""
+//        let numberOfAdults = numberOfAdultsLabel.text ?? ""
+//        let numberOfChildren = numberOfChildrenLabel.text ?? ""
+//        let hasWifi = wifiSwitch.isOn
+//        let roomChoice = roomType?.name ?? "Not Set"
+//
+//        print("Done tapped")
+//        print("firstName: \(firstName)")
+//        print("lastName: \(lastName)")
+//        print("email: \(email)")
+//        print("checkIn: \(checkIn)")
+//        print("checkOut: \(checkOut)")
+//        print("numberOfAdults: \(numberOfAdults)")
+//        print("numberOfChildren: \(numberOfChildren)")
+//        print("wifi: \(hasWifi)")
+//        print("roomType: \(roomChoice)")
+//    }
+    
+    func updateDoneButtonState() {
         let firstName = firstNameTextField.text ?? ""
         let lastName = lastNameTextField.text ?? ""
         let email = emailTextField.text ?? ""
-        let checkIn = checkInDateLabel.text ?? ""
-        let checkOut = checkOutDateLabel.text ?? ""
         let numberOfAdults = numberOfAdultsLabel.text ?? ""
-        let numberOfChildren = numberOfChildrenLabel.text ?? ""
-        let hasWifi = wifiSwitch.isOn
-        let roomChoice = roomType?.name ?? "Not Set"
-        
-        print("Done tapped")
-        print("firstName: \(firstName)")
-        print("lastName: \(lastName)")
-        print("email: \(email)")
-        print("checkIn: \(checkIn)")
-        print("checkOut: \(checkOut)")
-        print("numberOfAdults: \(numberOfAdults)")
-        print("numberOfChildren: \(numberOfChildren)")
-        print("wifi: \(hasWifi)")
-        print("roomType: \(roomChoice)")
+
+        doneBarButton.isEnabled = self.registration != nil && !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty && numberOfAdults != "0"
+
+    }
+    
+    @IBAction func textEditingChanged(_ sender: Any) {
+        print("textEditingChanged")
+        updateDoneButtonState()
     }
     
     @IBAction func cancelButtonTapped(_ sender: Any) {
@@ -195,6 +212,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
     func updateRoomType() {
         if let roomType = roomType {
             roomTypeLabel.text = roomType.name
+            updateDoneButtonState()
         } else {
             roomTypeLabel.text = "Not Set"
         }
